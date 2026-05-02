@@ -1,0 +1,41 @@
+<!-- myauth/templates/myauth/edit-profile.html -->
+{% extends "myauth/base.html" %}
+{% load static %}
+
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Редактирование профиля</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <h5>Информация о пользователе</h5>
+                        {{ user_form.as_p }}
+
+                        <hr>
+
+                        <h5>Информация о профиле</h5>
+                        {{ profile_form.as_p }}
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="{% url 'myauth:about-me' %}" class="btn btn-secondary">
+                                Отмена
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Сохранить изменения
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

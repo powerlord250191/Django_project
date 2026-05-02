@@ -1,0 +1,119 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+*.pyc
+
+# Django
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+static/
+*.sqlite3
+
+# Virtual Environment
+venv/
+.venv/
+env/
+.env
+.venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-*
+.idea/
+*.iml
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.coverage.*
+*.cover
+*.py,cover
+tests/__pycache__/
+.hypothesis/
+.pytest_cache/
+
+# Logs
+*.log
+logs/
+*.pid
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Media files
+media/
+uploads/
+staticfiles/
+static_root/
+media_root/
+
+# Secret files
+*.key
+*.pem
+*.crt
+*.p12
+secret_key.txt
+config/secrets.json
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# pyenv
+.python-version
+
+# Backup files
+*.bak
+*.backup
+*.tmp
+*~
+
+# Docker
+*.pid
+docker-compose.override.yml
+docker-compose.*.yml
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Redis
+*.rdb
+
+# Sentry
+.sentry-cli

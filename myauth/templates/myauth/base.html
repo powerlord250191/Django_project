@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+
+        {% endblock %}
+    </title>
+</head>
+<body>
+{% block body %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'myauth:users-list' %}">
+        <i class="bi bi-people"></i> Пользователи
+    </a>
+</li>
+{% endblock %}
+</body>
+</html>

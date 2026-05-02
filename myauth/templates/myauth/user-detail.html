@@ -1,0 +1,165 @@
+{% extends "myauth/base.html" %}
+{% load static %}
+
+{% block title %}{{ target_user.get_full_name|default:target_user.username }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <!-- Аватар пользователя -->
+                    <img src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}"
+                         alt="{{ target_user.username }}"
+                         class="rounded-circle img-fluid mb-3"
+                         style="width: 150px; height: 150px; object-fit: cover;"
+                         id="avatar-preview">
+
+                    {% if can_edit %}
+                    <hr>
+                    <h5 class="mt-3">Редактирование аватара</h5>
+
+                    <!-- Форма загрузки аватара (показывается только администраторам и владельцу) -->
+                    <form id="avatar-form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <input type="file" name="avatar" accept="image/*" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm">Загрузить</button>
+                        <button type="button" id="delete-avatar" class="btn btn-danger btn-sm">Удалить</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Информация о пользователе</h5>
+
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 150px;">Имя пользователя:</th>
+                            <td>{{ target_user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th>Имя:</th>
+                            <td>{{ target_user.first_name|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Фамилия:</th>
+                            <td>{{ target_user.last_name|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ target_user.email|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Дата регистрации:</th>
+                            <td>{{ target_user.date_joined|date:"d.m.Y H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th>О себе:</th>
+                            <td>{{ profile.bio|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Дата рождения:</th>
+                            <td>{{ profile.birth_date|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Статус:</th>
+                            <td>
+                                {% if target_user.is_superuser %}
+                                <span class="badge bg-danger">Суперпользователь</span>
+                                {% elif target_user.is_staff %}
+                                <span class="badge bg-warning">Администратор</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Пользователь</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+
+                    <a href="{% url 'myauth:users-list' %}" class="btn btn-secondary">
+                        &larr; К списку пользователей
+                    </a>
+
+                    {% if can_edit and target_user != user %}
+                    <span class="text-muted ms-3">
+                            <small>Вы можете редактировать аватар этого пользователя</small>
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if can_edit %}
+<script>
+    const avatarForm = document.getElementById('avatar-form');
+    const deleteButton = document.getElementById('delete-avatar');
+    const avatarPreview = document.getElementById('avatar-preview');
+    
+    if (avatarForm) {
+        avatarForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(avatarForm);
+            
+            try {
+                const response = await fetch('{% url "myauth:user-update-avatar" target_user.id %}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    avatarPreview.src = data.avatar_url + '?t=' + new Date().getTime();
+                    alert(data.message);
+                } else {
+                    alert('Ошибка: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Произошла ошибка при загрузке');
+            }
+        });
+    }
+    
+    if (deleteButton) {
+        deleteButton.addEventListener('click', async () => {
+            if (!confirm('Вы уверены, что хотите удалить аватар?')) return;
+            
+            try {
+                const response = await fetch('{% url "myauth:user-delete-avatar" target_user.id %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    avatarPreview.src = '/static/images/default-avatar.png';
+                    alert(data.message);
+                } else {
+                    alert('Ошибка: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Произошла ошибка при удалении');
+            }
+        });
+    }
+</script>
+{% endif %}
+{% endblock %}

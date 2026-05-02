@@ -1,0 +1,104 @@
+{% extends "myauth/base.html" %}
+
+{% block title %}
+About me
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Аватар</h5>
+
+                    <!-- Отображение аватара -->
+                    <img src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}/static/images/default-avatar.png{% endif %}"
+                         alt="Avatar"
+                         class="rounded-circle img-fluid mb-3"
+                         style="width: 150px; height: 150px; object-fit: cover;"
+                         id="avatar-preview">
+
+                    <!-- Форма загрузки аватара -->
+                    <form id="avatar-form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ avatar_form.as_p }}
+                        <button type="submit" class="btn btn-primary btn-sm">Загрузить</button>
+                        <button type="button" id="delete-avatar" class="btn btn-danger btn-sm">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Информация о пользователе</h5>
+                    <p><strong>Имя пользователя:</strong> {{ user_profile.username }}</p>
+                    <p><strong>Имя:</strong> {{ user_profile.first_name|default:"-" }}</p>
+                    <p><strong>Фамилия:</strong> {{ user_profile.last_name|default:"-" }}</p>
+                    <p><strong>Email:</strong> {{ user_profile.email|default:"-" }}</p>
+                    <p><strong>О себе:</strong> {{ profile.bio|default:"-" }}</p>
+                    <p><strong>Дата рождения:</strong> {{ profile.birth_date|default:"-" }}</p>
+
+                    <a href="{% url 'myauth:edit-profile' %}" class="btn btn-primary">
+                        Редактировать профиль
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('avatar-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+
+        try {
+            const response = await fetch('{% url "myauth:update-avatar" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('avatar-preview').src = data.avatar_url + '?t=' + new Date().getTime();
+                alert(data.message);
+            } else {
+                alert('Ошибка: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+
+    document.getElementById('delete-avatar').addEventListener('click', async () => {
+        if (!confirm('Вы уверены, что хотите удалить аватар?')) return;
+
+        try {
+            const response = await fetch('{% url "myauth:delete-avatar" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('avatar-preview').src = '/static/images/default-avatar.png';
+                alert(data.message);
+            } else {
+                alert('Ошибка: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+</script>
+{% endblock %}
