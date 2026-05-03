@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
@@ -7,11 +9,11 @@ from .admin_mixins import ExportAsCSVMixin
 
 
 class OrderInline(admin.TabularInline):
-    model = Product.orders.through
+    model: Product = Product.orders.through
 
 
 class ProductInline(admin.StackedInline):
-    model = ProductImage
+    model: ProductImage = ProductImage
 
 
 @admin.action(description="Archive products")
@@ -26,21 +28,21 @@ def mark_unarchived(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
-    actions = [
+    actions: [bool, str] = [
         mark_archived,
         mark_unarchived,
         "export_csv",
     ]
-    inlines = [
+    inlines: list = [
         OrderInline,
         ProductInline,
     ]
     # list_display = "pk", "name", "description", "price", "discount"
-    list_display = "pk", "name", "description_short", "price", "discount", "archived"
-    list_display_links = "pk", "name"
-    ordering = "-name", "pk"
-    search_fields = "name", "description"
-    fieldsets = [
+    list_display: tuple[str] = "pk", "name", "description_short", "price", "discount", "archived"
+    list_display_links: tuple[str] = "pk", "name"
+    ordering: tuple[str] = "-name", "pk"
+    search_fields: tuple[str] = "name", "description"
+    fieldsets: list[Any] = [
         (None, {
             "fields": ("name", "description"),
         }),
@@ -69,15 +71,15 @@ class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
 
 # class ProductInline(admin.TabularInline):
 class ProductInline(admin.StackedInline):
-    model = Order.products.through
+    model: Order = Order.products.through
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    inlines = [
+    inlines: list = [
         ProductInline,
     ]
-    list_display = "delivery_address", "promocode", "created_at", "user_verbose"
+    list_display: tuple[str] = "delivery_address", "promocode", "created_at", "user_verbose"
 
     def get_queryset(self, request):
         return Order.objects.select_related("user").prefetch_related("products")

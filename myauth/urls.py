@@ -20,9 +20,9 @@ from .views import (
     HelloView,
 )
 
-app_name = "myauth"
+app_name: str = "myauth"
 
-urlpatterns = [
+urlpatterns: list[path] = [
     # path("login/", login_view, name="login"),
     path(
         "login/",

@@ -11,27 +11,28 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 import os.path
 from pathlib import Path
+from typing import Any, AnyStr
 
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-hvxn%qq=gyw^4*o2lo1#bw0=wh#ux9s8h!=@c608arf_gz3+^7'
+SECRET_KEY: str = 'django-insecure-hvxn%qq=gyw^4*o2lo1#bw0=wh#ux9s8h!=@c608arf_gz3+^7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG: bool = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: list[Any] = []
 
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS: list[str] = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +44,7 @@ INSTALLED_APPS = [
     'myauth.apps.MyauthConfig',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE: list[str] = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,9 +55,9 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
 ]
 
-ROOT_URLCONF = 'mysite.urls'
+ROOT_URLCONF: str = 'mysite.urls'
 
-TEMPLATES = [
+TEMPLATES: list[dict[str, Any]] = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
@@ -72,12 +73,12 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'mysite.wsgi.application'
+WSGI_APPLICATION: str = 'mysite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
+DATABASES: dict[str, dict[str, str | Path]] = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
@@ -87,7 +88,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
+AUTH_PASSWORD_VALIDATORS: list[dict[str, Any]] = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
@@ -105,21 +106,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE: str = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE: str = 'UTC'
 
-USE_I18N = True
+USE_I18N: bool = True
 
-USE_TZ = True
+USE_TZ: bool = True
 
-USE_L10N = True
+USE_L10N: bool = True
 
-LOCALE_PATHS = [
+LOCALE_PATHS: list[Path] = [
     BASE_DIR / "locale/"
 ]
 
-LANGUAGES = [
+LANGUAGES: list[tuple[str, Any]] = [
     ("en", gettext_lazy("English")),
     ("ru", gettext_lazy("Russian")),
 ]
@@ -127,23 +128,23 @@ LANGUAGES = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-SATATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
+STATIC_URL: str = 'static/'
+STATIC_ROOT: str = os.path.join(BASE_DIR, "staticfiles")
+SATATICFILES_DIRS: list[str] = [os.path.join(BASE_DIR, "static"), ]
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR / 'uploads')
+MEDIA_URL: str = "/media/"
+MEDIA_ROOT: str = os.path.join(BASE_DIR / 'uploads')
 
-DATA_UPLOAD_MAX_NUMBER_FILES = 10240
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 100
+DATA_UPLOAD_MAX_NUMBER_FILES: int = 10240
+DATA_UPLOAD_MAX_NUMBER_FIELDS: int = 100
 
-ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif']
-MAX_AVATAR_SIZE = 5 * 1024 * 1024
+ALLOWED_EXTENSIONS: list[str] = ['jpg', 'jpeg', 'png', 'gif']
+MAX_AVATAR_SIZE: int = 5 * 1024 * 1024
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD: str = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = reverse_lazy("accounts:about-me")
-LOGIN_URL = reverse_lazy("accounts:login")
+LOGIN_REDIRECT_URL: str = reverse_lazy("accounts:about-me")
+LOGIN_URL: str = reverse_lazy("accounts:login")

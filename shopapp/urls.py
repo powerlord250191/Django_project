@@ -16,9 +16,9 @@ from .views import (
     ProductsDataExportView,
 )
 
-app_name = "shopapp"
+app_name: str = "shopapp"
 
-urlpatterns = [
+urlpatterns: list[path] = [
     path("", ShopIndexView.as_view(), name="index"),
     path("groups/", GroupsListView.as_view(), name="groups_list"),
     path("products/", ProductsListView.as_view(), name="products_list"),

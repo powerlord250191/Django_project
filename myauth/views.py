@@ -24,7 +24,7 @@ class HelloView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         items_str: str | int = request.GET.get("items") or 0
         items: int = int(items_str)
-        products_line = ngettext(
+        products_line: ngettext = ngettext(
             "one products",
             "{count} products",
             items,
@@ -57,7 +57,7 @@ class UsersListview(LoginRequiredMixin, ListView):
     paginate_by: int = 20
 
     def get_queryset(self):
-        queryset = User.objects.all().select_related('profile')
+        queryset: str = User.objects.all().select_related('profile')
 
         search_query = self.request.GET.get('search', '')
         if search_query:
@@ -105,8 +105,8 @@ class UserAvatarUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         )
 
     def get_object(self, queryset=None):
-        user_id = self.kwargs.get("user_id")
-        user = get_object_or_404(User, id=user_id)
+        user_id: int = self.kwargs.get("user_id")
+        user: User|None = get_object_or_404(User, id=user_id)
         profile, created = Profile.objects.get_or_create(user=user)
         return profile
 
@@ -144,7 +144,7 @@ class UserAvatarUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class UserAvatarDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def test_func(self):
-        user = get_object_or_404(User, id=self.kwargs.get('user_id'))
+        user: User|None = get_object_or_404(User, id=self.kwargs.get('user_id'))
         profile, created = Profile.objects.get_or_create(user=user)
         return (
                 self.request.user.is_staff or
@@ -153,7 +153,7 @@ class UserAvatarDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
         )
 
     def post(self, request, user_id):
-        user = get_object_or_404(User, id=user_id)
+        user: User|None = get_object_or_404(User, id=user_id)
         profile, created = Profile.objects.get_or_create(user=user)
 
         if profile.avatar:
@@ -177,7 +177,7 @@ class UserAvatarDeleteView(LoginRequiredMixin, UserPassesTestMixin, View):
 class RegisterView(CreateView):
     form_class: UserCreationForm = UserCreationForm
     template_name: str = "myauth/register.html"
-    success_url = reverse_lazy("myauth:about-me")
+    success_url: str = reverse_lazy("myauth:about-me")
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -216,7 +216,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 class UpdateAvatarView(LoginRequiredMixin, View):
 
     def post(self, request):
-        profile = get_object_or_404(Profile, user=request.user)
+        profile: Profile|None = get_object_or_404(Profile, user=request.user)
 
         if "avatar" in request.FILES:
             if profile.avatar:
@@ -244,7 +244,7 @@ class UpdateAvatarView(LoginRequiredMixin, View):
 class DeleteAvatarView(LoginRequiredMixin, View):
 
     def post(self, request):
-        profile = get_object_or_404(Profile, user=request.user)
+        profile: Profile|None = get_object_or_404(Profile, user=request.user)
 
         if profile.avatar:
             if os.path.isfile(profile.avatar.path):
@@ -269,8 +269,8 @@ def login_view(request: HttpRequest) -> HttpResponse:
             return redirect("/admin")
         return render(request, "myauth/login.html")
 
-    username = request.POST["username"]
-    password = request.POST["password"]
+    username: str = request.POST["username"]
+    password: str = request.POST["password"]
 
     user = authenticate(request, username=username, password=password)
     if user is not None:

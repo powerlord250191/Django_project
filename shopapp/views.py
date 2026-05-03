@@ -1,4 +1,5 @@
 from timeit import default_timer
+from typing import Any
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
@@ -28,14 +29,14 @@ class ShopIndexView(View):
 
 class GroupsListView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
-        context = {
+        context: dict = {
             "form": GroupForm(),
             "groups": Group.objects.prefetch_related('permissions').all(),
         }
         return render(request, 'shopapp/groups-list.html', context=context)
 
     def post(self, request: HttpRequest) -> HttpResponse:
-        form = GroupForm(request.POST)
+        form: GroupForm = GroupForm(request.POST)
         if form.is_valid():
             form.save()
         return redirect(request.path)
@@ -44,7 +45,7 @@ class GroupsListView(View):
 class ProductDetailsView(DetailView):
     template_name: str = "shopapp/product-details.html"
     # model = Product
-    queryset = Product.objects.prefetch_related("images")
+    queryset: str = Product.objects.prefetch_related("images")
     context_object_name: str = "product"
 
 
@@ -103,15 +104,15 @@ class ProductDeleteView(DeleteView):
 
 
 class OrdersListView(LoginRequiredMixin, ListView):
-    queryset = (Order.objects
+    queryset: tuple[Order] = (Order.objects
                 .select_related("user")
                 .prefetch_related("products")
                 )
 
 
 class OrderDetailView(DetailView, PermissionRequiredMixin):
-    permission_required = "shopapp.view_order"
-    queryset = (Order.objects
+    permission_required: str = "shopapp.view_order"
+    queryset: tuple[Order] = (Order.objects
                 .select_related("user")
                 .prefetch_related("products")
                 )
@@ -147,7 +148,7 @@ class CreateOrderView(CreateView):
 
 class ProductsDataExportView(View):
     def get(self, request: HttpRequest) -> JsonResponse:
-        products = Product.objects.order_by("pk").all()
+        products: list = Product.objects.order_by("pk").all()
         products_data: list[dict[str, str]] = [
             {
                 "pk": product.pk,

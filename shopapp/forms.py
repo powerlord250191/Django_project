@@ -1,11 +1,11 @@
 from django.contrib.auth.models import Group
 from django.forms import ModelForm, ImageField, ClearableFileInput, FileField
 from .models import Product, Order
-from shopapp.models import Product
+from .models import Product
 
 
 class MultipleFileInput(ClearableFileInput):
-    allow_multiple_selected = True
+    allow_multiple_selected: bool = True
 
 
 class MultipleFileField(FileField):
@@ -20,7 +20,7 @@ class MultipleFileField(FileField):
         if not isinstance(data, (list, tuple)):
             data = [data]
 
-        cleaned_data = []
+        cleaned_data: list = []
         for file in data:
             cleaned_file = super().clean(file, initial)
             if cleaned_file:
@@ -31,10 +31,10 @@ class MultipleFileField(FileField):
 
 class ProductForm(ModelForm):
     class Meta:
-        model = Product
-        fields = "name", "price", "description", "discount", "preview"
+        model: Product = Product
+        fields: tuple[str] = "name", "price", "description", "discount", "preview"
 
-    images = MultipleFileField(
+    images: MultipleFileField = MultipleFileField(
         required=False,
     )
 
@@ -48,11 +48,11 @@ class ProductForm(ModelForm):
 
 class OrderForm(ModelForm):
     class Meta:
-        model = Order
-        fields = "delivery_address", "promocode", "user"
+        model: str = Order
+        fields: tuple[str] = "delivery_address", "promocode", "user"
 
 
 class GroupForm(ModelForm):
     class Meta:
-        model = Group
-        fields = "name",
+        model: Group = Group
+        fields: tuple[str] = "name",
